@@ -88,7 +88,8 @@ if __name__ == '__main__':
     attainment_data = {}
     attainment_data['twitter_id'] = sub_data['twitter_id']
     attainment_data['follower_count'] = home_data['follower_count']
-    attainment_data['tweet_count'] = df['tweet'].count()
+    tweet_count = df['tweet'].count()
+    attainment_data['tweet_count'] = tweet_count
     attainment_data['engagement_count'] = df['engagement'].sum()
     attainment_data['impression_count'] = df['impression'].sum()
     attainment_data['rt_count'] = sub_data['rt_count']
@@ -96,10 +97,10 @@ if __name__ == '__main__':
     attainment_data['engagement_percent'] = sub_data['engagement_percent']
     attainment_data['impression_count_per_day']\
         = round((attainment_data['impression_count'] / last_month_days), 4)
-    attainment_data['rt_count_per_day']\
-        = round((attainment_data['rt_count'] / last_month_days), 4)
-    attainment_data['fav_count_per_day']\
-        = round((attainment_data['fav_count'] / last_month_days), 4)
+    attainment_data['rt_count_per_tweet_count']\
+        = round((attainment_data['rt_count'] / tweet_count), 4)
+    attainment_data['fav_count_per_tweet_count']\
+        = round((attainment_data['fav_count'] / tweet_count), 4)
     attainment_data['created_at'] = sub_data['created_at']
     df = pd.DataFrame.from_dict([attainment_data])
     df = df.ix[
@@ -114,8 +115,8 @@ if __name__ == '__main__':
             'fav_count',
             'engagement_percent',
             'impression_count_per_day',
-            'rt_count_per_day',
-            'fav_count_per_day',
+            'rt_count_per_tweet_count',
+            'fav_count_per_tweet_count',
             'created_at',
         ]
     ]
