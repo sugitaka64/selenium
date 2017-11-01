@@ -1,0 +1,8 @@
+__pycache__
+.DS_Store
+derby.log
+metastore_db
+conf/*
+!conf/conf_dummy.yml
+outputs/*
+!outputs/.gitkeep
