@@ -2,6 +2,7 @@ __pycache__
 .DS_Store
 derby.log
 metastore_db
+ghostdriver.log
 conf/*
 !conf/conf_dummy.yml
 outputs/*
