@@ -3,7 +3,8 @@ __pycache__
 derby.log
 metastore_db
 ghostdriver.log
-conf/*
-!conf/conf_dummy.yml
+config/*
+!config/conf_dummy.yml
 outputs/*
 !outputs/.gitkeep
+Pipfile.lock
