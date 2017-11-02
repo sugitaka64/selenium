@@ -5,6 +5,7 @@
 
 from datetime import datetime
 import lxml.html
+from lxml.html import HtmlElement
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from time import sleep
@@ -46,7 +47,7 @@ class GetDataFromTwitterAnalytics(object):
 
     def get_home_page_source(
         self,
-    ) -> str:
+    ) -> HtmlElement:
         """get home page source."""
         # set url
         home_url = 'https://analytics.twitter.com/user/%s/home' % (self.tw_id)
@@ -62,7 +63,7 @@ class GetDataFromTwitterAnalytics(object):
 
     def get_tweets_page_source(
         self,
-    ) -> str:
+    ) -> HtmlElement:
         """get tweets page source."""
         # set url
         tweets_url = 'https://analytics.twitter.com/user/%s/tweets' % (self.tw_id)
@@ -94,7 +95,7 @@ class GetDataFromTwitterAnalytics(object):
     def get_audience_insights_page_source(
         self,
         audience_insights_url: str,
-    ) -> str:
+    ) -> HtmlElement:
         """get tweets page source."""
         # access /accounts/yyy/audience_insights
         self.driver.get(audience_insights_url)
