@@ -8,17 +8,14 @@ from dateutil.relativedelta import relativedelta
 import lxml.html
 from lxml.html import HtmlElement
 import os
-from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import sys
-from time import sleep
 import unittest
 from unittest import mock
 
 try:
     import get_data_from_twitter_analytics
 except ModuleNotFoundError:
-    sys.path.append(os.getcwd() + '/../twitter_analytics')
+    sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../twitter_analytics')
     import get_data_from_twitter_analytics
 
 class GetDataFromTwitterAnalyticsTests(unittest.TestCase):
@@ -128,13 +125,26 @@ class GetDataFromTwitterAnalyticsTests(unittest.TestCase):
             + '<body>'\
             + '<ul>'\
             + '<li class="tweet-stats">'\
-            + 'test'\
-            + '</li>'\
             + '<span class="tweet-text">'\
+            + 'test'\
             + '</span>'\
+            + '</li>'\
             + '</ul>'\
             + '</body>'\
             + '</html>'
         page_source = lxml.html.fromstring(test_html)
         self.assertEqual(self.gdfta.get_tweets_data(page_source), [])
 
+        test_html = '<html>'\
+            + '<body>'\
+            + '<ul>'\
+            + '<li class="tweet-stats">'\
+            + '<div class="tweet-activity-data">'\
+            + 'test'\
+            + '</div>'\
+            + '</li>'\
+            + '</ul>'\
+            + '</body>'\
+            + '</html>'
+        page_source = lxml.html.fromstring(test_html)
+        self.assertEqual(self.gdfta.get_tweets_data(page_source), [])

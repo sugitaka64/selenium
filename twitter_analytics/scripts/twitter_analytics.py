@@ -24,7 +24,7 @@ import yaml
 try:
     import get_data_from_twitter_analytics
 except ModuleNotFoundError:
-    sys.path.append(os.getcwd() + '/twitter_analytics')
+    sys.path.append(os.path.abspath(os.path.dirname(__file__)) + '/../twitter_analytics')
     import get_data_from_twitter_analytics
 
 if __name__ == '__main__':
