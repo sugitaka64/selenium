@@ -140,7 +140,7 @@ class GetDataFromTwitterAnalyticsTests(unittest.TestCase):
             + '<ul>'\
             + '<li class="tweet-stats">'\
             + '<div class="tweet-activity-data">'\
-            + 'test'\
+            + '0'\
             + '</div>'\
             + '</li>'\
             + '</ul>'\
@@ -148,3 +148,211 @@ class GetDataFromTwitterAnalyticsTests(unittest.TestCase):
             + '</html>'
         page_source = lxml.html.fromstring(test_html)
         self.assertEqual(self.gdfta.get_tweets_data(page_source), [])
+
+        test_html = '<html>'\
+            + '<body>'\
+            + '<ul>'\
+            + '<li class="tweet-stats">'\
+            + '<span class="tweet-text">'\
+            + 'test'\
+            + '</span>'\
+            + '<div class="tweet-activity-data">'\
+            + '0'\
+            + '</div>'\
+            + '<div class="tweet-activity-data">'\
+            + '1,000'\
+            + '</div>'\
+            + '<div class="tweet-activity-data">'\
+            + '30%'\
+            + '</div>'\
+            + '</li>'\
+            + '</ul>'\
+            + '</body>'\
+            + '</html>'
+        page_source = lxml.html.fromstring(test_html)
+        expected_value = [
+            {
+                'twitter_id': self.tw_id,
+                'tweet': 'test',
+                'impression': 0,
+                'engagement': 1000,
+                'engagement_percent': 0.3000,
+                'target_date': self.last_month,
+            },
+        ]
+        actual_value = self.gdfta.get_tweets_data(page_source)
+        del(actual_value[0]['created_at'])
+        self.assertEqual(actual_value, expected_value)
+
+    def test_get_sub_data(self):
+        """get rt fav count."""
+        test_html = '<html><body>test</body></html>'
+        page_source = lxml.html.fromstring(test_html)
+        self.assertEqual(self.gdfta.get_sub_data(page_source), {})
+
+        test_html = '<html>'\
+            + '<body>'\
+            + '<div id="engagements-time-series-container">'\
+            + '<div class="time-series-value">'\
+            + '30%'\
+            + '</div>'\
+            + '</div>'\
+            + '</body>'\
+            + '</html>'
+        page_source = lxml.html.fromstring(test_html)
+        self.assertEqual(self.gdfta.get_sub_data(page_source), {})
+
+        test_html = '<html>'\
+            + '<body>'\
+            + '<div id="engagements-time-series-container">'\
+            + '<div class="time-series-value">'\
+            + '30%'\
+            + '</div>'\
+            + '</div>'\
+            + '<div id="clicks-time-series-container">'\
+            + '<div class="time-series-value">'\
+            + '100'\
+            + '</div>'\
+            + '</div>'\
+            + '<div id="retweets-time-series-container">'\
+            + '<div class="time-series-value">'\
+            + '1,000'\
+            + '</div>'\
+            + '</div>'\
+            + '<div id="favs-time-series-container">'\
+            + '<div class="time-series-value">'\
+            + '100'\
+            + '</div>'\
+            + '</div>'\
+            + '<div id="replies-time-series-container">'\
+            + '<div class="time-series-value">'\
+            + '1,000'\
+            + '</div>'\
+            + '</div>'\
+            + '</body>'\
+            + '</html>'
+        page_source = lxml.html.fromstring(test_html)
+        expected_value = {
+            'twitter_id': self.tw_id,
+            'engagement_percent': 0.3000,
+            'link_click_count': 100,
+            'rt_count': 1000,
+            'fav_count': 100,
+            'reply_count': 1000,
+            'target_date': self.last_month,
+        }
+        actual_value = self.gdfta.get_sub_data(page_source)
+        del(actual_value['created_at'])
+        self.assertEqual(actual_value, expected_value)
+
+    def test_get_audience_insights_data(self):
+        """get audience insights data."""
+        test_html = '<html><body>test</body></html>'
+        page_source = lxml.html.fromstring(test_html)
+        self.assertEqual(self.gdfta.get_audience_insights_data(page_source), [])
+
+        test_html = '<html>'\
+            + '<body>'\
+            + '<div class="demographics">'\
+            + '<div class="vertical-bar-panel">'\
+            + 'test'\
+            + '</div>'\
+            + '<div class="top-n-panel">'\
+            + 'test'\
+            + '</div>'\
+            + '</div>'\
+            + '</body>'\
+            + '</html>'
+        page_source = lxml.html.fromstring(test_html)
+        self.assertEqual(self.gdfta.get_audience_insights_data(page_source), [])
+
+        test_html = '<html>'\
+            + '<body>'\
+            + '<div class="demographics">'\
+            + '  <div class="vertical-bar-panel">'\
+            + '    <div class="vertical-bar-panel-header">'\
+            + '      <h3>'\
+            + '        category'\
+            + '      </h3>'\
+            + '    </div>'\
+            + '    <div class="vertical-bar-chart-legend">'\
+            + '      <div class="vertical-bar-label">'\
+            + '        test'\
+            + '      </div>'\
+            + '    </div>'\
+            + '  </div>'\
+            + '  <div class="top-n-panel">'\
+            + '    <div class="top-n-panel-header">'\
+            + '      <h3>'\
+            + '        category'\
+            + '      </h3>'\
+            + '    </div>'\
+            + '    <div class="top-n-panel-table">'\
+            + '      <table>'\
+            + '        <tbody>'\
+            + '          <tr>'\
+            + '            test'\
+            + '          </tr>'\
+            + '        </tbody>'\
+            + '      </table>'\
+            + '    </div>'\
+            + '  </div>'\
+            + '</div>'\
+            + '</body>'\
+            + '</html>'
+        page_source = lxml.html.fromstring(test_html)
+        self.assertEqual(self.gdfta.get_audience_insights_data(page_source), [])
+
+        test_html = '<html>'\
+            + '<body>'\
+            + '<div class="demographics">'\
+            + '  <div class="vertical-bar-panel">'\
+            + '    <div class="vertical-bar-panel-header">'\
+            + '      <h3>category_1</h3>'\
+            + '    </div>'\
+            + '    <div class="vertical-bar-chart-legend">'\
+            + '      <div class="vertical-bar-label">'\
+            + '        <h6>label_1</h6>'\
+            + '        <h4>98%</h4>'\
+            + '      </div>'\
+            + '    </div>'\
+            + '  </div>'\
+            + '  <div class="top-n-panel">'\
+            + '    <div class="top-n-panel-header">'\
+            + '      <h3>category_2</h3>'\
+            + '    </div>'\
+            + '    <div class="top-n-panel-table">'\
+            + '      <table>'\
+            + '        <tbody>'\
+            + '          <tr>'\
+            + '            <td class="top-n-panel-name"><span>label_2</span></td>'\
+            + '            <td class="statistic-cell"><span>< 1%</span></td>'\
+            + '          </tr>'\
+            + '        </tbody>'\
+            + '      </table>'\
+            + '    </div>'\
+            + '  </div>'\
+            + '</div>'\
+            + '</body>'\
+            + '</html>'
+        page_source = lxml.html.fromstring(test_html)
+        expected_value = [
+            {
+                'twitter_id': self.tw_id,
+                'category': 'category_1',
+                'label': 'label_1',
+                'percent': 0.98,
+                'target_date': self.last_month,
+            },
+            {
+                'twitter_id': self.tw_id,
+                'category': 'category_2',
+                'label': 'label_2',
+                'percent': 0.01,
+                'target_date': self.last_month,
+            },
+        ]
+        actual_value = self.gdfta.get_audience_insights_data(page_source)
+        del(actual_value[0]['created_at'])
+        del(actual_value[1]['created_at'])
+        self.assertEqual(actual_value, expected_value)
