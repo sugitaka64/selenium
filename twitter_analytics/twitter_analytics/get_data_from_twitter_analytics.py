@@ -201,6 +201,7 @@ class GetDataFromTwitterAnalytics(object):
             'rt_count': rt_count,
             'fav_count': fav_count,
             'reply_count': reply_count,
+            'target_date': self.target_month,
             'created_at': self.today,
         }
 
@@ -237,12 +238,14 @@ class GetDataFromTwitterAnalytics(object):
 
                 label = labels[0].text.strip()
                 number = numbers[0].text.strip()
+                number = round((float(number.replace('%', '').replace('< ', '')) / 100.0), 2)
                 audience_insights_data.append(
                     {
                         'twitter_id': self.tw_id,
                         'category': category,
                         'label': label,
                         'percent': number,
+                        'target_date': self.target_month,
                         'created_at': self.today,
                     }
                 )
@@ -271,12 +274,14 @@ class GetDataFromTwitterAnalytics(object):
 
                 label = labels[0].text.strip()
                 number = numbers[0].text.strip()
+                number = round((float(number.replace('%', '').replace('< ', '')) / 100.0), 2)
                 audience_insights_data.append(
                     {
                         'twitter_id': self.tw_id,
                         'category': category,
                         'label': label,
                         'percent': number,
+                        'target_date': self.target_month,
                         'created_at': self.today,
                     }
                 )

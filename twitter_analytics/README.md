@@ -18,6 +18,7 @@ $ pip install pipenv
 ```shell-session
 $ git clone https://github.com/sugitaka64/selenium.git
 $ cd selenium/twitter_analytics/
+$ pipenv update
 $ cp config/conf_dummy.yml config/conf.yml
 $ vi config/conf.yml
 ```
@@ -32,8 +33,8 @@ audience_insights_url:
 
 ```shell-session
 $ pipenv run python scripts/twitter_analytics.py \
-  --conf_file_path=config/conf_test.yml \
-  --output_dir_path=outputs/
+  --conf_file_path=./config/conf.yml \
+  --output_dir_path=./outputs/
 ```
 
 `output_dir_path`に指定したディレクトリ内に、取得したデータがCSV形式で出力されます。
