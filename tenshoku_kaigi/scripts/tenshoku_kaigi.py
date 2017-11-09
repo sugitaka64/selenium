@@ -6,7 +6,6 @@
 Usage:
     tenshoku_kaigi.py
         --conf_file_path=<conf_file_path>
-        --output_dir_path=<output_dir_path>
     tenshoku_kaigi.py -h | --help
 Options:
     -h --help  show this screen and exit.
@@ -15,7 +14,7 @@ Options:
 from datetime import datetime
 from docopt import docopt
 import os
-import pandas as pd
+import pymysql
 import sys
 import yaml
 
@@ -31,7 +30,6 @@ if __name__ == '__main__':
     # get parameters
     args = docopt(__doc__)
     conf_file_path = args['--conf_file_path']
-    output_dir_path = args['--output_dir_path']
 
     # config
     with open(conf_file_path) as f:
@@ -39,9 +37,9 @@ if __name__ == '__main__':
     login_id = conf_data['login_id']
     login_pw = conf_data['login_pw']
     company_id = conf_data['company_id']
-    reputations_data_csv_file_path = output_dir_path + 'reputations_data.csv'
-    salaries_data_csv_file_path = output_dir_path + 'salaries_data.csv'
-    exams_data_csv_file_path = output_dir_path + 'exams_data.csv'
+    mysql_host = conf_data['mysql_host']
+    mysql_user = conf_data['mysql_user']
+    mysql_pw = conf_data['mysql_pw']
 
     # create model
     gdftk = get_data_from_tenshoku_kaigi.GetDataFromTenshokuKaigi(login_id, login_pw, company_id)
@@ -51,25 +49,44 @@ if __name__ == '__main__':
     salaries_data = gdftk.get_salaries_data()
     exams_data = gdftk.get_exams_data()
 
-    # to csv
-    # reputations data
-    for dict_data in [
-        [reputations_data, reputations_data_csv_file_path],
-        [salaries_data, salaries_data_csv_file_path],
-        [exams_data, exams_data_csv_file_path],
-    ]:
-        df = pd.DataFrame.from_dict(dict_data[0])
-        df = df.ix[
-            :,
-            [
-                'comment',
-                'raiting',
-                'review_id',
-                'post_date',
-                'created_at',
-            ]
-        ]
-        df.to_csv(dict_data[1], index=False, header=True)
+    # mysql connect
+    conn = pymysql.connect(
+        host=mysql_host,
+        unix_socket='/tmp/mysql.sock',
+        user=mysql_user,
+        passwd=mysql_pw,
+        db='mysql',
+        charset='utf8'
+    )
+    cur = conn.cursor()
+
+    # inset
+    sql = 'INSERT INTO '\
+        + 'tenshoku_kaigi.word_of_mouth(comment, raiting, review_id, post_date, created_at) '\
+        + 'VALUES (%s, %s, %s, %s, %s);'
+    for dict_data in [reputations_data, salaries_data, exams_data]:
+        for row in dict_data:
+            try:
+                cur.execute(
+                    sql,
+                    (
+                        row['comment'],
+                        row['raiting'],
+                        row['review_id'],
+                        row['post_date'],
+                        row['created_at'],
+                    )
+                )
+            except Exception as e:
+                print(e)
+                conn.rollback()
+                cur.close()
+                conn.close()
+                sys.exit(1)
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
     print('%s %s end.' % (datetime.today(), __file__))
     sys.exit(0)

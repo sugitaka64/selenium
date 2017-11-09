@@ -5,6 +5,4 @@ metastore_db
 ghostdriver.log
 config/*
 !config/conf_dummy.yml
-outputs/*
-!outputs/.gitkeep
 Pipfile.lock

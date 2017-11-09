@@ -11,8 +11,8 @@ lxml = "*"
 cssselect = "*"
 selenium = "*"
 docopt = "*"
-pyyaml = "*"
-pandas = "*"
+PyYAML = "*"
+PyMySQL = "*"
 
 
 [dev-packages]

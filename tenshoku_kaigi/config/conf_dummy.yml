@@ -1,3 +1,6 @@
 login_id: xxx
-login_pw: yyy
-company_id: zzz
+login_pw: xxx
+company_id: xxx
+mysql_host: xxx.xxx.xxx.xxx
+mysql_user: xxx
+mysql_pw: xxx
