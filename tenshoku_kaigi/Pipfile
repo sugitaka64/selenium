@@ -11,8 +11,9 @@ lxml = "*"
 cssselect = "*"
 selenium = "*"
 docopt = "*"
-PyYAML = "*"
-PyMySQL = "*"
+pyyaml = "*"
+pymysql = "*"
+google-cloud-language = "*"
 
 
 [dev-packages]

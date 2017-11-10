@@ -62,14 +62,16 @@ if __name__ == '__main__':
 
     # inset
     sql = 'INSERT INTO '\
-        + 'tenshoku_kaigi.word_of_mouth(comment, raiting, review_id, post_date, created_at) '\
-        + 'VALUES (%s, %s, %s, %s, %s);'
+        + 'tenshoku_kaigi.word_of_mouth'\
+        + '(company_id, comment, raiting, review_id, post_date, created_at) '\
+        + 'VALUES (%s, %s, %s, %s, %s, %s);'
     for dict_data in [reputations_data, salaries_data, exams_data]:
         for row in dict_data:
             try:
                 cur.execute(
                     sql,
                     (
+                        row['company_id'],
                         row['comment'],
                         row['raiting'],
                         row['review_id'],
@@ -79,6 +81,7 @@ if __name__ == '__main__':
                 )
             except Exception as e:
                 print(e)
+                print(row)
                 conn.rollback()
                 cur.close()
                 conn.close()

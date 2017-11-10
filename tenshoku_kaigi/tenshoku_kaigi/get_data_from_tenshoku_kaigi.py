@@ -96,7 +96,7 @@ class GetDataFromTenshokuKaigi(object):
                 post_date = post_dates[0].text.replace(self.post_date_text, '').strip()
                 post_date = datetime.strptime(post_date, '%Y年%m月%d日').strftime('%Y-%m-%d')
                 raiting_classes = raitings[0].classes
-                raiting = ''
+                raiting = None
                 for raiting_class in raiting_classes:
                     s = re.search('^rating-(\d+)$', raiting_class)
                     if s:
@@ -105,6 +105,7 @@ class GetDataFromTenshokuKaigi(object):
                 # set list
                 ret.append(
                     {
+                        'company_id': str(self.company_id),
                         'comment': comment,
                         'raiting': raiting,
                         'review_id': review_id,
