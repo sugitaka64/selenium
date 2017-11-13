@@ -79,6 +79,7 @@ if __name__ == '__main__':
         tmp.append([mysql_result[0], score, magnitude])
         sleep(0.5)
 
+    # insert
     try:
         cur.executemany(insert_sql, tmp)
     except Exception as e:

@@ -15,6 +15,7 @@ pyyaml = "*"
 pymysql = "*"
 google-cloud-language = "*"
 "mecab-python3" = "*"
+pandas = "*"
 
 
 [dev-packages]
