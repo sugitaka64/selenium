@@ -16,6 +16,8 @@ pymysql = "*"
 google-cloud-language = "*"
 "mecab-python3" = "*"
 pandas = "*"
+scikit-learn = "*"
+scipy = "*"
 
 
 [dev-packages]
