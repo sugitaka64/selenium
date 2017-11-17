@@ -35,7 +35,8 @@ if __name__ == '__main__':
     mysql_host = conf_data['mysql_host']
     mysql_user = conf_data['mysql_user']
     mysql_pw = conf_data['mysql_pw']
-    csv_file_path = output_dir_path + 'tf_idf.csv'
+    tf_idf_csv_file_path = output_dir_path + 'tf_idf.csv'
+    max_tf_idf_csv_file_path = output_dir_path + 'max_tf_idf.csv'
 
     # mysql connect
     conn = pymysql.connect(
@@ -52,9 +53,9 @@ if __name__ == '__main__':
     sql = 'SELECT '\
         + 'ma.word_of_mouth_id, ma.word '\
         + 'FROM tenshoku_kaigi.morphological_analysis AS ma '\
-        + 'INNER JOIN tenshoku_kaigi.word_of_mouth AS wom '\
-        + 'ON ma.word_of_mouth_id = wom.id '\
-        + 'WHERE wom.company_id = %s;'
+        + 'INNER JOIN tenshoku_kaigi.word_of_mouth_comment AS womc '\
+        + 'ON ma.word_of_mouth_id = womc.id '\
+        + 'WHERE womc.company_id = %s;'
 
     # select
     word_list = {}
@@ -95,7 +96,13 @@ if __name__ == '__main__':
     df = df.rename(index=id_index_mapping, columns=word_column_mapping)
 
     # make csv
-    df.to_csv(csv_file_path, index=True, header=True)
+    df.to_csv(tf_idf_csv_file_path, index=True, header=True)
+
+    # max value
+    max_df = df.max(axis=1)
+    idxmax_df = df.idxmax(axis=1)
+    df = pd.concat([idxmax_df, max_df], axis=1).rename(columns={0: 'word', 1: 'score'})
+    df.to_csv(max_tf_idf_csv_file_path, index=True, header=True)
 
     print('%s %s end.' % (datetime.today(), __file__))
     sys.exit(0)
